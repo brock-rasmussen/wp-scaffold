@@ -1,0 +1,27 @@
+{
+  "name": "@badger91/wp-scaffold",
+  "version": "1.0.0",
+  "description": "Quickly scaffold out plugins, post types, taxonomies, etc.",
+  "keywords": [
+    "wordpress",
+    "scaffold"
+  ],
+  "author": "Brock Rasmussen",
+  "license": "ISC",
+  "homepage": "https://github.com/badger91/wp-scaffold",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/badger91/wp-scaffold"
+  },
+  "bin": {
+    "wp-scaffold": "./index.js"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^9.0.0",
+    "ejs": "^3.1.6",
+    "lodash": "^4.17.21",
+    "pluralize": "^8.0.0",
+    "prompts": "^2.4.2"
+  }
+}
