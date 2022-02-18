@@ -113,7 +113,7 @@ module.exports = () => new Command('post-type')
 		console.log(config.supports);
 
 		try {
-			scaffold('./templates/post-type.ejs', `post-types/${slug}.php`, config);
+			scaffold('./templates/post-type/template.ejs', `post-types/${slug}.php`, config);
 			console.log(chalk.green(`A file for the '${slug}' post-type has been created in '/post-types/${slug}.php'.`))
 		} catch(error) {}
 	})

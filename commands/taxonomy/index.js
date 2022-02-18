@@ -121,7 +121,7 @@ module.exports = () => new Command('taxonomy')
 		}, defaults, responses);
 
 		try {
-			scaffold('./templates/taxonomy.ejs', `taxonomies/${slug}.php`, config);
+			scaffold('./commands/taxonomy/template.ejs', `taxonomies/${slug}.php`, config);
 			console.log(chalk.green(`A file for the '${slug}' taxonomy has been created in '/taxonomies/${slug}.php'.`))
 		} catch (error) { }
 	})
