@@ -1,0 +1,25 @@
+<?php
+/**
+ * Add the `<%= slug %>` settings section.
+ *
+ * @see https://developer.wordpress.org/reference/functions/add_settings_section/
+ */
+function <%= pluginMachineName %>_settings_section_<%= machineName %>_init() {
+	add_settings_section(
+		'<%= slug %>',
+		__( '<%= title %>', '<%= textdomain %>' ),
+		'<%= pluginMachineName %>_settings_section_<%= machineName %>_render',
+		'<%= page %>'
+	);
+}
+add_action( 'admin_init', '<%= pluginMachineName %>_settings_section_<%= machineName %>_init' );
+
+
+/**
+ * Render section content (e.g. header, description, etc.).
+ *
+ * @param array $args The arguments passed to `add_settings_section`.
+ */
+function <%= pluginMachineName %>_settings_section_<%= machineName %>_render( $args ) {
+	printf( '<h2 class="title">%s</h2>', $args['title'] );
+}

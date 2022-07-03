@@ -1,0 +1,83 @@
+<?php
+/**
+ * Plugin Name: <%= name %>
+ * Plugin URI: <%= pluginURI %>
+ * Description: <%= description %>
+ * Version: 1.0.0
+ * Author: <%= author %>
+ * Author URI: <%= authorURI %>
+ * Text Domain: <%= textdomain %>
+ * Domain Path: /languages
+ */
+
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ) {
+	die;
+}
+
+// Current plugin version.
+define( '<%= machineName.toUpperCase() %>_VERSION', '1.0.0' );
+
+// Include scaffolded files.
+if ( is_admin() ) {
+	// require_once __DIR__ . '/columns/example.php';
+	// require_once __DIR__ . '/menu-pages/example.php';
+	// require_once __DIR__ . '/metaboxes/example.php';
+	// require_once __DIR__ . '/settings-fields/example.php';
+	// require_once __DIR__ . '/settings-sections/example.php';
+	// require_once __DIR__ . '/submenu-pages/example.php';
+}
+// require_once __DIR__ . '/post-types/example.php';
+// require_once __DIR__ . '/taxonomy/example.php';
+// require_once __DIR__ . '/user-permissions/example.php';
+// require_once __DIR__ . '/user-roles/example.php';
+
+
+/**
+ * Fires when the plugin is activated.
+ *
+ * @see https://developer.wordpress.org/reference/functions/register_activation_hook/
+ */
+function <%= machineName %>_activate() {
+	// Set up options, update/create databases, flush rewrite rules (when registering a post type or taxonomy), etc.
+}
+register_activation_hook( __FILE__, '<%= machineName %>_activate' );
+
+
+/**
+ * Fires when the plugin is deactivated.
+ *
+ * @see https://developer.wordpress.org/reference/functions/register_deactivation_hook/
+ */
+function <%= machineName %>_deactivate() {
+	// Flush cache, flush rewrite rules, etc.
+}
+register_deactivation_hook( __FILE__, '<%= machineName %>_deactivate' );
+
+
+/**
+ * Upgrade path when there are breaking changes.
+ *
+ * @param WP_Upgrader $upgrader
+ * @param array       $hook_extra
+ *
+ * @see https://developer.wordpress.org/reference/hooks/upgrader_process_complete/
+ */
+function <%= machineName %>_upgrade( $upgrader, $hook_extra ) {
+	$basename = plugin_basename( __FILE__ );
+	$version = get_option( '<%= machineName %>_version' );
+
+	if (
+		$options['action'] == 'update' &&
+		$options['type'] == 'plugin' &&
+		isset( $options['plugins'] ) &&
+		in_array( $basename, $options['plugins'] ) &&
+		$version !== <%= machineName.toUpperCase() %>_VERSION
+	) {
+		// Write your upgrade path here.
+
+		// Update version stored in the database.
+		update_option( '<%= machineName %>_version', <%= machineName.toUpperCase() %>_VERSION );
+	}
+}
+add_action( 'upgrader_process_complete', '<%= machineName %>_upgrade', 10, 2 );

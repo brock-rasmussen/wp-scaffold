@@ -1,9 +1,11 @@
 <?php
 /**
  * Registers the `<%= slug %>` taxonomy for use with <%- objectTypes.map(objectType => `'${objectType}'`).join(', ') %>
+ *
+ * @see https://developer.wordpress.org/reference/functions/register_taxonomy/
  */
-function badger_taxonomy_<%= machineName %>_init() {
-	register_taxonomy( '<%= slug %>', [<%- objectTypes.map(objectType => `'${objectType}'`).join(',') %>], [
+function <%= pluginMachineName %>_taxonomy_<%= machineName %>_init() {
+	register_taxonomy( '<%= slug %>', [<%- objectTypes.map(objectType => `'${objectType}'`).join(', ') %>], [
 		'labels'				=> [
 			'name'							=> __( '<%= itemsTitleCase %>', '<%= textdomain %>' ),
 			'singular_name'					=> _x( '<%= itemTitleCase %>', 'taxonomy general name', '<%= textdomain %>' ),
@@ -30,26 +32,30 @@ function badger_taxonomy_<%= machineName %>_init() {
 			'item_link'						=> __( '<%= itemTitleCase %> Link', '<%= textdomain %>' ),
 			'item_link_description'			=> __( 'A link to a <%= item %>', '<%= textdomain %>' ),
 		],
-		'description'			=> '<%= description %>',
-		'public'				=> <%= public %>,
+		'description'			=> '',
 		'hierarchical'			=> <%= hierarchical %>,
+		'public'				=> <%= public %>,
 		'show_ui'				=> <%= showUi %>,
+		<% if (!showUi) { _%>// <% } %>'show_admin_column'		=> true,
 		'show_in_rest'			=> <%= showInRest %>,
-		'show_in_quick_edit'	=> <%= showInQuickEdit %>,
-		'show_admin_column'		=> <%= showAdminColumn %>,
 		'rewrite'				=> [
 			'slug'			=> '<%= resourceSlug %>',
 		],
 	]);
 }
-add_action( 'init', 'badger_taxonomy_<%= machineName %>_init' );
+add_action( 'init', '<%= pluginMachineName %>_taxonomy_<%= machineName %>_init' );
+
 
 /**
  * Sets the post updated messages for the `<%= slug %>` taxonomy.
- * @param	array	$messages	Post updated messages.
- * @return	array	Messages for the `<%= slug %>` taxonomy.
+ *
+ * @param  array $messages Post updated messages.
+ *
+ * @return array Messages for the `<%= slug %>` taxonomy.
+ *
+ * @see https://developer.wordpress.org/reference/hooks/term_updated_messages/
  */
-function badger_taxonomy_<%= machineName %>_updated_messages( $messages ) {
+function <%= pluginMachineName %>_taxonomy_<%= machineName %>_updated_messages( $messages ) {
 	$messages['<%= slug %>'] = [
 		0 => '', // Unused. Messages start at index 1.
 		1 => __( '<%= itemUpperFirst %> added.', '<%= textdomain %>' ),
@@ -62,4 +68,4 @@ function badger_taxonomy_<%= machineName %>_updated_messages( $messages ) {
 
 	return $messages;
 }
-add_filter( 'term_updated_messages', 'badger_taxonomy_<%= machineName %>_updated_messages' );
+add_filter( 'term_updated_messages', '<%= pluginMachineName %>_taxonomy_<%= machineName %>_updated_messages' );

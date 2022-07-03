@@ -1,10 +1,11 @@
 <?php
 /**
  * Register the `<%= slug %>` post type.
+ *
  * @see https://developer.wordpress.org/reference/functions/register_post_type/
  */
-function badger_post_type_<%= machineName %>_init() {
-	register_post_type('<%= slug %>', [
+function <%= pluginMachineName %>_post_type_<%= machineName %>_init() {
+	register_post_type( '<%= slug %>', [
 		'labels'				=> [
 			'name'					=> __( '<%= itemsTitleCase %>', '<%= textdomain %>' ),
 			'singular_name'			=> __( '<%= itemTitleCase %>', '<%= textdomain %>' ),
@@ -29,14 +30,12 @@ function badger_post_type_<%= machineName %>_init() {
 			'parent_item_colon'		=> __( 'Parent <%= itemTitleCase %>', '<%= textdomain %>' ),
 			'menu_name'				=> __( '<%= itemTitleCase %>', '<%= textdomain %>' ),
 		],
-		'description'			=> '<%= description %>',
-		'public'				=> <%= public %>,
+		'description'			=> '',
 		'hierarchical'			=> <%= hierarchical %>,
-		<%_ if (excludeFromSearch === public) { _%>
-		'exclude_from_search'	=> <%= excludeFromSearch %>,
-		<%_ } _%>
-		'show_ui'				=> <%= showUi %>,
-		'supports'				=> [<%- supports.map(support => `'${support}'`).join(',') %>],
+		'public'				=> <%= public %>,
+		// 'exclude_from_search'	=> <%= !public %>,
+		<% if (showUi === public) { _%>// <% } %>'show_ui'				=> <%= showUi %>,
+		'supports'				=> [ <%- supports.map(support => `'${support}'`).join(', ') %> ],
 		'has_archive'			=> '<%= resourceSlug %>',
 		'rewrite'				=> [
 			'slug'			=> '<%= resourceSlug %>',
@@ -44,16 +43,21 @@ function badger_post_type_<%= machineName %>_init() {
 		],
 		'menu_icon'				=> 'dashicons-<%= menuIcon %>',
 		'show_in_rest'			=> <%= showInRest %>,
-	]);
+	] );
 }
-add_action( 'init', '<%= textdomain %>_post_type_<%= machineName %>_init' );
+add_action( 'init', '<%= pluginMachineName %>_post_type_<%= machineName %>_init' );
+
 
 /**
  * Sets the post updated messages for the `<%= slug %>` post type.
- * @param	array	$messages Post updated messages.
- * @return	array	Messages for the `<%= slug %>` post type.
+ *
+ * @param  array $messages Post updated messages.
+ *
+ * @return array Messages for the `<%= slug %>` post type.
+ *
+ * @see https://developer.wordpress.org/reference/hooks/post_updated_messages/
  */
-function badger_post_type_<%= machineName %>_updated_messages( $messages ) {
+function <%= pluginMachineName %>_post_type_<%= machineName %>_updated_messages( $messages ) {
 	global $post;
 
 	$permalink = get_permalink( $post );
@@ -80,15 +84,20 @@ function badger_post_type_<%= machineName %>_updated_messages( $messages ) {
 
 	return $messages;
 }
-add_filter( 'post_updated_messages', '<%= textdomain %>_post_type_<%= machineName %>_updated_messages' );
+add_filter( 'post_updated_messages', '<%= pluginMachineName %>_post_type_<%= machineName %>_updated_messages' );
+
 
 /**
  * Sets the bulk post updated messages for the `<%= slug %>` post type.
- * @param	array	$bulk_messages	Bulk update messages.
- * @param	int[]	$bulk_counts	Array of item counts for each message, used to build internationalized strings.
- * @return	array	Bulk messages for the `<%= slug %>` post type.
+ *
+ * @param  array $bulk_messages Bulk update messages.
+ * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
+ *
+ * @return array Bulk messages for the `<%= slug %>` post type.
+ *
+ * @see https://developer.wordpress.org/reference/hooks/bulk_post_updated_messages/
  */
-function badger_post_type_<%= machineName %>_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+function <%= pluginMachineName %>_post_type_<%= machineName %>_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 	global $post;
 
 	$bulk_messages['<%= slug %>'] = [
@@ -106,4 +115,4 @@ function badger_post_type_<%= machineName %>_bulk_updated_messages( $bulk_messag
 
 	return $bulk_messages;
 }
-add_filter( 'bulk_post_updated_messages', '<%= textdomain %>_post_type_<%= machineName %>_bulk_updated_messages', 10, 2 );
+add_filter( 'bulk_post_updated_messages', '<%= pluginMachineName %>_post_type_<%= machineName %>_bulk_updated_messages', 10, 2 );
