@@ -19,6 +19,7 @@ module.exports = () => new Command('settings-section')
 	.action(async (slug, page, options) => {
 		// Current plugin folder name.
 		let plugin = path.basename(process.cwd());
+		let fileName = kebabCase(slug);
 
 		// Default values.
 		let defaults = {
@@ -28,6 +29,7 @@ module.exports = () => new Command('settings-section')
 			 * @see https://developer.wordpress.org/reference/functions/add_settings_section/
 			 */
 			title: startCase(slug),
+			description: '',
 			page,
 		};
 
@@ -46,6 +48,6 @@ module.exports = () => new Command('settings-section')
 		}, defaults, responses);
 
 		try {
-			scaffold(path.resolve(__dirname, './settings-section.template.php.ejs'), `settings-sections/${slug}.php`, vars);
+			scaffold(path.resolve(__dirname, './settings-section.template.php.ejs'), `settings-sections/${fileName}.php`, vars);
 		} catch(error) {}
 	})

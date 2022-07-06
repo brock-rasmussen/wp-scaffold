@@ -2,7 +2,7 @@ const { getFolderFileNames } = require('../utils/project-data');
 
 
 /**
- * Get list of files (without extension) from the `menu-pages` folder.
+ * Get list of files (without extension) from the `submenu-pages` folder.
  * @returns string[]
  */
 const getSubmenuPages = async () => {

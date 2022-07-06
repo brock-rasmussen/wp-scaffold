@@ -20,7 +20,7 @@ module.exports = async (defaults) => {
 		{
 			type: defaults.parentSlug ? null : 'select',
 			name: 'parentSlug',
-			message: 'Parent menu slug:',
+			message: 'Parent slug:',
 			initial: defaults.parentSlug ? menuPageChoices.findIndex((choice) => choice.value === defaults.parentSlug) : 1,
 			choices: menuPageChoices,
 		},

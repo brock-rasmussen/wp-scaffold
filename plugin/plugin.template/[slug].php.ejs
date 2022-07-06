@@ -1,11 +1,19 @@
 <?php
 /**
  * Plugin Name: <%= name %>
- * Plugin URI: <%= pluginURI %>
+<%_ if (description) { _%>
  * Description: <%= description %>
+<%_ } _%>
+<%_ if (pluginURI) { _%>
+ * Plugin URI: <%= pluginURI %>
+<%_ } _%>
  * Version: 1.0.0
+<%_ if (author) { _%>
  * Author: <%= author %>
+<%_ } _%>
+<%_ if (authorURI) { _%>
  * Author URI: <%= authorURI %>
+<%_ } _%>
  * Text Domain: <%= textdomain %>
  * Domain Path: /languages
  */

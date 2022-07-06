@@ -51,7 +51,7 @@ module.exports = async (defaults) => {
 		{
 			type: defaults.objectTypes.length ? null : 'multiselect',
 			name: 'objectTypes',
-			message: 'Object types associated with the taxonomy:',
+			message: 'Associated object types:',
 			choices: postTypeChoices,
 		}
 	], {

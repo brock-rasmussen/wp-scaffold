@@ -12,7 +12,7 @@ module.exports = () => new Command('settings-field')
 	.description('generate PHP for a settings field to appear in a settings section')
 	.argument('<slug>', 'the field identifier', (slug) => {
 		// Not required to be snake-case, but seems to be the common convention.
-		return snakeCase(slug);
+		return kebabCase(slug);
 	})
 	.argument('[section]', 'the settings-section identifier')
 	.argument('[page]', 'the admin page slug')
@@ -38,6 +38,7 @@ module.exports = () => new Command('settings-field')
 	.action(async (slug, section, page, options) => {
 		// Current plugin folder name.
 		let plugin = path.basename(process.cwd());
+		let fileName = snakeCase(slug);
 
 		// Default values.
 		let defaults = {
@@ -58,6 +59,53 @@ module.exports = () => new Command('settings-field')
 		let pluginMachineName = snakeCase(plugin);
 		let machineName = snakeCase(slug);
 
+		// Set up variables based on the `type`.
+		let dataType;
+		let sanitizeCallback;
+
+		switch (options.type) {
+			case 'checkbox':
+				dataType = 'boolean';
+				break;
+			case 'checkboxes':
+				dataType = 'array';
+				break;
+			case 'color':
+				dataType = 'string';
+				break;
+			case 'email':
+				dataType = 'string';
+				sanitizeCallback = 'sanitize_email';
+				break;
+			case 'media':
+				dataType = 'integer';
+				break;
+			case 'number':
+				dataType = 'number';
+				sanitizeCallback = 'intval';
+				break;
+			case 'radio':
+				dataType = 'array';
+				break;
+			case 'richtext':
+				dataType = 'text';
+				sanitizeCallback = 'wp_filter_post_kses';
+				break;
+			case 'select':
+				dataType = 'string';
+				break;
+			case 'text':
+				dataType = 'string';
+				break;
+			case 'textarea':
+				dataType = 'string';
+				break;
+			case 'url':
+				dataType = 'string';
+				sanitizeCallback = 'esc_url_raw';
+				break;
+		}
+
 		// Data variables to be passed to the template.
 		let vars = Object.assign({
 			slug,
@@ -66,6 +114,6 @@ module.exports = () => new Command('settings-field')
 		}, defaults, responses);
 
 		try {
-			scaffold(path.resolve(__dirname, './settings-field.template.php.ejs'), `settings-fields/${slug}.php`, vars);
+			scaffold(path.resolve(__dirname, './settings-field.template.php.ejs'), `settings-fields/${fileName}.php`, vars);
 		} catch(error) {}
 	})

@@ -17,7 +17,7 @@ module.exports = () => new Command('plugin')
 	.option('-y, --yes', 'automatically answer "yes" to any prompts', false)
 	.action(async (slug, options) => {
 		// Get package.json from working directory.
-		packageJson = JSON.parse(await getFileContents('package.json'));
+		packageJson = JSON.parse(await getFileContents('package.json') || '{}');
 
 		// Default values.
 		let defaults = {

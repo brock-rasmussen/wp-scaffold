@@ -1,5 +1,5 @@
 const prompts = require('prompts')
-const validateURL = require('../utils/validate-url')
+const { isValidURL } = require('../utils/validation')
 
 module.exports = async (defaults) => {
 	return await prompts([
@@ -28,7 +28,7 @@ module.exports = async (defaults) => {
 			initial: defaults.authorURI,
 			validate(authorURI) {
 				if (!authorURI) return true;
-				return validateURL(authorURI);
+				return isValidURL(authorURI);
 			},
 		},
 		{
@@ -38,7 +38,7 @@ module.exports = async (defaults) => {
 			initial: defaults.pluginURI,
 			validate(pluginURI) {
 				if (!pluginURI) return true;
-				return validateURL(pluginURI);
+				return isValidURL(pluginURI);
 			},
 		},
 	], {

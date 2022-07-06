@@ -21,5 +21,7 @@ add_action( 'admin_init', '<%= pluginMachineName %>_settings_section_<%= machine
  * @param array $args The arguments passed to `add_settings_section`.
  */
 function <%= pluginMachineName %>_settings_section_<%= machineName %>_render( $args ) {
-	printf( '<h2 class="title">%s</h2>', $args['title'] );
+	<%_ if (description) { _%>
+	echo apply_filters( 'the_content', __( '<%= description %>', '<%= textdomain %>' ) );
+	<%_ } _%>
 }

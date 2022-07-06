@@ -137,6 +137,11 @@ const getMenuPageSlug = async (page) => {
 	return page;
 };
 
+
+/**
+ * Get a list of project menu and submenu pages along with core settings page slugs in a list formatted for `prompts` library `choices`.
+ * @returns Array<{ title: string, value: string }>
+ */
 const getSettingsPageChoices = async () => {
 	let menuPages = await getMenuPages();
 	let submenuPages = await getSubmenuPages();

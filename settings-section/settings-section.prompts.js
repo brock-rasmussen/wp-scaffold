@@ -8,13 +8,19 @@ module.exports = async (defaults) => {
 		{
 			type: 'text',
 			name: 'title',
-			message: 'Title',
+			message: 'Title:',
 			initial: defaults.title,
+		},
+		{
+			type: 'text',
+			name: 'description',
+			message: 'Description:',
+			initial: defaults.description,
 		},
 		{
 			type: defaults.parent ? null : 'select',
 			name: 'page',
-			message: 'The slug of the settings page on which to show the section.',
+			message: 'Page slug:',
 			initial: defaults.parent ? settingsPageChoices.findIndex((choice) => choice.value === defaults.parent) : 1,
 			choices: settingsPageChoices,
 		},
