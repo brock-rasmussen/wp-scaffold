@@ -1,55 +1,55 @@
-const { lstat, readdir, readFile } = require('fs/promises');
+const { lstat, readdir, readFile, writeFile } = require('fs/promises');
 const path = require('path');
 
 
 /**
- * Get a file's content in the current working directory.
- * @param string fileName 
- * @returns string
+ * Get a list of file names from a folder in the current working directory.
+ * @param {string} folder 
+ * @returns {string[]}
  */
-const getFileContents = async (fileName) => {
+const readdirFiles = async (dir) => {
+	let dirPath = path.resolve(process.cwd(), dir);
+
 	try {
-		let contents = await readFile(path.resolve(process.cwd(), fileName), 'utf-8');
-		return contents;
-	} catch(error) {}
+		let stats = await lstat(dirPath);
+
+		if (stats.isDirectory()) {
+			return await readdir(dirPath);
+		}
+	} catch(error) {
+		return []
+	}
 }
 
 
 /**
  * Get a list of file names (without extensions) from a folder in the current working directory.
- * @param string folder 
- * @returns string[]
+ * @param {string} dir 
+ * @returns {string[]}
  */
-const getFolderFileNames = async (folder) => {
-	let files = await getFolderFiles(folder);
-	return files.map((file) => {
-		return path.parse(file).name;
-	});
+const readdirFilenames = async (dir) => {
+	let files = await readdirFiles(dir);
+	return files.map((file) => path.parse(file).name);
 }
 
 
 /**
- * Get a list of file names from a folder in the current working directory.
- * @param string folder 
- * @returns string[]
+ * Run a search and replace on a file.
+ * @param {string} filename 
+ * @param {string,RegExp} search 
+ * @param {string} replace
  */
-const getFolderFiles = async (folder) => {
-	let folderPath = path.resolve(process.cwd(), folder);
-
+const searchAndReplace = async (filename, search, replace) => {
 	try {
-		let stats = await lstat(folderPath);
+		let contents = await readFile(path.resolve(process.cwd(), filename), 'utf-8');
+		let newContents = contents.replaceAll(search, replace);
+		await writeFile(path.resolve(process.cwd(), filename), newContents, 'utf-8');
+	} catch(error) {}
+}
 
-		if (stats.isDirectory()) {
-			const files = await readdir(folderPath);
-			return files;
-		}
-	} catch(error) {
-		return [];
-	}
-};
 
 module.exports = {
-	getFileContents,
-	getFolderFileNames,
-	getFolderFiles,
+	readdirFilenames,
+	readdirFiles,
+	searchAndReplace,
 };

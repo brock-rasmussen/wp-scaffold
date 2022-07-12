@@ -53,7 +53,7 @@ module.exports = async (defaults) => {
 			name: 'objectTypes',
 			message: 'Associated object types:',
 			choices: postTypeChoices,
-		}
+		},
 	], {
 		onCancel() {
 			process.exit(1);

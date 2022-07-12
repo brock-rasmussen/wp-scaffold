@@ -45,6 +45,7 @@ module.exports = () => new Command('menu-page')
 		}, defaults, responses);
 
 		try {
-			scaffold(path.resolve(__dirname, './menu-page.template.php.ejs'), `menu-pages/${slug}.php`, vars);
+			await scaffold(path.resolve(__dirname, './menu-page.template.php.ejs'), `menu-pages/${slug}.php`, vars);
+			await searchAndReplace(`${plugin}.php`, '/* MENU PAGES */', `/* MENU PAGES */\r\nrequire_once __DIR__ . '/menu-pages/${slug}.php';`);
 		} catch(error) {}
 	})

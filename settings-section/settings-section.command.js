@@ -48,6 +48,7 @@ module.exports = () => new Command('settings-section')
 		}, defaults, responses);
 
 		try {
-			scaffold(path.resolve(__dirname, './settings-section.template.php.ejs'), `settings-sections/${fileName}.php`, vars);
+			await scaffold(path.resolve(__dirname, './settings-section.template.php.ejs'), `settings-sections/${fileName}.php`, vars);
+			await searchAndReplace(`${plugin}.php`, '/* SETTINGS SECTIONS */', `/* SETTINGS SECTIONS */\r\nrequire_once __DIR__ . '/settings-sections/${slug}.php';`);
 		} catch(error) {}
 	})

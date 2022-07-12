@@ -114,6 +114,7 @@ module.exports = () => new Command('settings-field')
 		}, defaults, responses);
 
 		try {
-			scaffold(path.resolve(__dirname, './settings-field.template.php.ejs'), `settings-fields/${fileName}.php`, vars);
+			await scaffold(path.resolve(__dirname, './settings-field.template.php.ejs'), `settings-fields/${fileName}.php`, vars);
+			await searchAndReplace(`${plugin}.php`, '/* SETTINGS FIELDS */', `/* SETTINGS FIELDS */\r\nrequire_once __DIR__ . '/settings-fields/${slug}.php';`);
 		} catch(error) {}
 	})

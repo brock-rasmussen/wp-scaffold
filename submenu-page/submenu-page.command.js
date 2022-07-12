@@ -2,7 +2,7 @@ const { Command } = require('commander');
 const { kebabCase, snakeCase, startCase } = require('lodash');
 const path = require('path');
 
-const { getMenuPageSlug } = require('../menu-page/menu-page.utils');
+const { resolveMenuPage } = require('../menu-page/menu-page.utils');
 const prompts = require('./submenu-page.prompts');
 const scaffold = require('../utils/scaffold');
 
@@ -28,7 +28,7 @@ module.exports = () => new Command('submenu-page')
 			/**
 			 * @see https://developer.wordpress.org/reference/functions/add_submenu_page/
 			 */
-			parentSlug: parentSlug ? await getMenuPageSlug(parentSlug) : '',
+			parentSlug: parentSlug ? await resolveMenuPage(parentSlug) : '',
 			pageTitle: startCase(slug),
 			menuTitle: startCase(slug),
 		};
@@ -48,6 +48,7 @@ module.exports = () => new Command('submenu-page')
 		}, defaults, responses);
 
 		try {
-			scaffold(path.resolve(__dirname, './submenu-page.template.php.ejs'), `submenu-pages/${slug}.php`, vars);
+			await scaffold(path.resolve(__dirname, './submenu-page.template.php.ejs'), `submenu-pages/${slug}.php`, vars);
+			await searchAndReplace(`${plugin}.php`, '/* SUBMENU PAGES */', `/* SUBMENU PAGES */\r\nrequire_once __DIR__ . '/submenu-pages/${slug}.php';`);
 		} catch(error) {}
 	})

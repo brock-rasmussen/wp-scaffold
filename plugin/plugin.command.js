@@ -1,8 +1,8 @@
 const { Command } = require('commander');
+const { readFile } = require('fs/promises');
 const { kebabCase, snakeCase, startCase } = require('lodash');
 const path = require('path');
 
-const { getFileContents } = require('../utils/project-data');
 const prompts = require('./plugin.prompts');
 const scaffold = require('../utils/scaffold');
 
@@ -17,7 +17,14 @@ module.exports = () => new Command('plugin')
 	.option('-y, --yes', 'automatically answer "yes" to any prompts', false)
 	.action(async (slug, options) => {
 		// Get package.json from working directory.
-		packageJson = JSON.parse(await getFileContents('package.json') || '{}');
+		let package = '{}'
+		
+		try {
+			package = await readFile(path.resolve(process.cwd(), 'package.json'), 'utf-8');
+			return contents;
+		} catch(error) {}
+		
+		packageJson = JSON.parse(package);
 
 		// Default values.
 		let defaults = {

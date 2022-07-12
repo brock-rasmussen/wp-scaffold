@@ -1,0 +1,73 @@
+<?php
+/**
+ * Add the table column header.
+ *
+ * @param string[] $post_columns An associative array of column headings.
+ *
+ * @see https://developer.wordpress.org/reference/hooks/manage_screen-id_columns/
+ */
+function <%= pluginMachineName %>_posts_<%= machineName %>_column_header( $post_columns ) {
+	$offset = array_search( '<%= insertBefore %>', array_keys($post_columns) );
+
+	return array_merge(
+		array_slice( $post_columns, 0, $offset ),
+		[ '<%= machineName %>' => __( '<%= title %>', '<%= textdomain %>' ) ],
+		array_slice( $post_columns, $offset, null )
+	);
+}
+<%_ postTypes.forEach(function (postType) { _%>
+<%- `add_filter( 'manage_edit-${postType}_columns', '${pluginMachineName}_posts_${machineName}_column_header' );` %>
+<%_ }) _%>
+
+
+/**
+ * Output column content for each post.
+ *
+ * @param string $column_name The name of the column to display.
+ * @param int    $post_id     The current post ID.
+ *
+ * @see https://developer.wordpress.org/reference/hooks/manage_post-post_type_posts_custom_column/
+ */
+function <%= pluginMachineName %>_posts_<%= machineName %>_column_content( $column_name, $post_id ) {
+	if ( $column_name === '<%= machineName %>' ) {
+		// output goes here.
+	}
+}
+<%_ postTypes.forEach(function (postType) { _%>
+<%- `add_action( 'manage_${postType}_posts_custom_column', '${pluginMachineName}_posts_${machineName}_column_content', 10, 2 );` %>
+<%_ }) _%>
+
+<%_ if (isSortable) { _%>
+
+/**
+ * Add the custom column to the list of sortable columns for the screen.
+ *
+ * @param array $sortable_columns An array of sortable columns.
+ *
+ * @see https://developer.wordpress.org/reference/hooks/manage_this-screen-id_sortable_columns/
+ */
+function <%= pluginMachineName %>_posts_<%= machineName %>_column_sortable( $sortable_columns ) {
+	$sortable_columns['<%= machineName %>'] = '<%= slug %>';
+	return $sortable_columns;
+}
+<%_ postTypes.forEach(function (postType) { _%>
+<%- `add_filter( 'manage_edit-${postType}_sortable_columns', '${pluginMachineName}_posts_${machineName}_column_sortable' );` %>
+<%_ }) _%>
+
+
+/**
+ * Tell the query how to interpret this custom `orderby` parameter.
+ *
+ * @param $query_vars The array of requested query variables.
+ *
+ * @see https://developer.wordpress.org/reference/hooks/request/
+ */
+function <%= pluginMachineName %>_posts_<%= machineName %>_column_sort( $query_vars ) {
+	if ( array_key_exists( 'orderby', $query_vars ) && $query_vars['orderby'] === '<%= slug %>' ) {
+		// Custom request alterations go here. The same values that can be passed to WP_Query can be passed here.
+		// $query_vars['orderby'] = '';
+	}
+	return $query_vars;
+}
+add_action( 'request', '<%= pluginMachineName %>_posts_<%= machineName %>_column_sort' );
+<%_ } _%>

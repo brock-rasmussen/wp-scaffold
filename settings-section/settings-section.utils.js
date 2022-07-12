@@ -1,24 +1,17 @@
-const { getFolderFileNames } = require('../utils/project-data');
-
-
-/**
- * Get list of files (without extension) from the `settings-sections` folder.
- * @returns string[]
- */
-const getSettingsSections = async () => {
-	return getFolderFileNames('settings-sections');
-};
+const { readdirFilenames } = require('../utils/project-data');
 
 
 /**
  * Get a list of project settings sections in a list formatted for `prompts` library `choices`.
- * @returns Array<{ title: string, value: string }>
+ * @returns {{ title: string, value: string }[]}
  */
 const getSettingsSectionChoices = async () => {
-	let settingsSections = await getSettingsSections();
-	// Sort alphabetically.
+	let settingsSections = await readdirFilenames('settings-sections');
+	
+	// Sort alphabetically
 	settingsSections.sort();
-	// Format for `prompts`.
+	
+	// Format for `prompts`
 	return settingsSections.map((section) => ({
 		title: section,
 		value: section,
@@ -28,5 +21,4 @@ const getSettingsSectionChoices = async () => {
 
 module.exports = {
 	getSettingsSectionChoices,
-	getSettingsSections,
 };

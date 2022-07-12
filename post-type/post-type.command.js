@@ -5,6 +5,7 @@ const pluralize = require('pluralize');
 
 const prompts = require('./post-type.prompts');
 const scaffold = require('../utils/scaffold');
+const { searchAndReplace } = require('../utils/project-data');
 
 /**
  * Export the post-type scaffolding command.
@@ -88,6 +89,9 @@ module.exports = () => new Command('post-type')
 		}, defaults, responses);
 
 		try {
-			scaffold(path.resolve(__dirname, './post-type.template.php.ejs'), `post-types/${slug}.php`, vars);
+			await scaffold(path.resolve(__dirname, './post-type.template.php.ejs'), `post-types/${slug}.php`, vars);
+			await searchAndReplace(`${plugin}.php`, '/* POST TYPES */', `/* POST TYPES */\r\nrequire_once __DIR__ . '/post-types/${slug}.php';`);
+			await searchAndReplace(`${plugin}.php`, '/* REGISTER POST TYPES */', `/* REGISTER POST TYPES */\r\n\t${pluginMachineName}_post_type_${machineName}_init();`);
+			await searchAndReplace(`${plugin}.php`, '/* UNREGISTER POST TYPES */', `/* UNREGISTER POST TYPES */\r\n\tunregister_post_type('${slug}');`);
 		} catch(error) {}
 	})

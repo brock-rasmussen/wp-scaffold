@@ -88,6 +88,7 @@ module.exports = () => new Command('taxonomy')
 		}, defaults, responses);
 
 		try {
-			scaffold(path.resolve(__dirname, './taxonomy.template.php.ejs'), `taxonomies/${slug}.php`, vars);
+			await scaffold(path.resolve(__dirname, './taxonomy.template.php.ejs'), `taxonomies/${slug}.php`, vars);
+			await searchAndReplace(`${plugin}.php`, '/* TAXONOMIES */', `/* TAXONOMIES */\r\nrequire_once __DIR__ . '/taxonomies/${slug}.php';`);
 		} catch (error) {}
 	})
