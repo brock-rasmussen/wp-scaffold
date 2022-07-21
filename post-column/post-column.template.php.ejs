@@ -30,7 +30,7 @@ function <%= pluginMachineName %>_posts_<%= machineName %>_column_header( $post_
  */
 function <%= pluginMachineName %>_posts_<%= machineName %>_column_content( $column_name, $post_id ) {
 	if ( $column_name === '<%= machineName %>' ) {
-		// output goes here.
+		// TODO: Generate row output.
 	}
 }
 <%_ postTypes.forEach(function (postType) { _%>
@@ -64,8 +64,7 @@ function <%= pluginMachineName %>_posts_<%= machineName %>_column_sortable( $sor
  */
 function <%= pluginMachineName %>_posts_<%= machineName %>_column_sort( $query_vars ) {
 	if ( array_key_exists( 'orderby', $query_vars ) && $query_vars['orderby'] === '<%= slug %>' ) {
-		// Custom request alterations go here. The same values that can be passed to WP_Query can be passed here.
-		// $query_vars['orderby'] = '';
+		// TODO: Customize the request ordering. The same values that can be passed to WP_Query can be passed here.
 	}
 	return $query_vars;
 }

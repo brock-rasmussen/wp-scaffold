@@ -15,6 +15,19 @@ function <%= pluginMachineName %>_menu_page_<%= machineName %>_init() {
 		'dashicons-<%= menuIcon %>',
 		null,
 	);
+
+	// TODO: Uncomment this code to customize the submenu menu title, if applicable. Remove this code otherwise.
+	/* add_submenu_page(
+		'<%= slug %>',
+		__( '<%= pageTitle %>', '<%= textdomain %>' ),
+		// Customize the submenu link.
+		__( '<%= menuTitle %>', '<%= textdomain %>' ),
+		// @see https://wordpress.org/support/article/roles-and-capabilities/
+		'manage_options',
+		'<%= slug %>',
+		'<%= pluginMachineName %>_menu_page_<%= machineName %>_render',
+		null,
+	); */
 }
 add_action( 'admin_menu', '<%= pluginMachineName %>_menu_page_<%= machineName %>_init' );
 

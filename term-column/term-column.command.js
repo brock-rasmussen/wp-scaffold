@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const { Command } = require('commander');
 const { kebabCase, snakeCase, startCase } = require('lodash');
 const path = require('path');
@@ -47,7 +48,14 @@ module.exports = () => new Command('term-column')
 
 		try {
 			await scaffold(path.resolve(__dirname, './term-column.template.php.ejs'), `term-columns/${fileName}.php`, vars);
-			await searchAndReplace(`${plugin}.php`, '/* TERM COLUMNS */', `/* TERM COLUMNS */\r\n\trequire_once __DIR__ . '/term-columns/${fileName}.php';`);
-		} catch (error) {}
+			await searchAndReplace(
+				`${plugin}.php`,
+				'/* TERM COLUMNS */',
+				`/* TERM COLUMNS */\r\n\trequire_once __DIR__ . '/term-columns/${fileName}.php';`,
+				(contents) => contents.includes(`require_once __DIR__ . '/term-columns/${fileName}.php';`)
+			);
+		} catch (error) {
+			console.log(chalk.red(error));
+		}
 	});
 

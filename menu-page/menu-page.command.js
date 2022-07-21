@@ -1,15 +1,17 @@
+const chalk = require('chalk');
 const { Command } = require('commander');
 const { snakeCase, kebabCase, startCase } = require('lodash');
 const path = require('path');
 
 const prompts = require('./menu-page.prompts');
 const scaffold = require('../utils/scaffold');
+const { searchAndReplace } = require('../utils/project-data')
 
 /**
  * Export the menu-page scaffolding command.
  */
 module.exports = () => new Command('menu-page')
-	.description('generate PHP for an admin menu page')
+	.description('FEATURE PLUGIN ONLY - generate PHP for an admin menu page')
 	.argument('<slug>', 'the unique identifier for the menu item', (slug) => {
 		return slug.replace(/[^a-z\-_\d]/g, '');
 	})
@@ -46,6 +48,13 @@ module.exports = () => new Command('menu-page')
 
 		try {
 			await scaffold(path.resolve(__dirname, './menu-page.template.php.ejs'), `menu-pages/${slug}.php`, vars);
-			await searchAndReplace(`${plugin}.php`, '/* MENU PAGES */', `/* MENU PAGES */\r\nrequire_once __DIR__ . '/menu-pages/${slug}.php';`);
-		} catch(error) {}
+			await searchAndReplace(
+				`${plugin}.php`,
+				'/* MENU PAGES */',
+				`/* MENU PAGES */\r\n\trequire_once __DIR__ . '/menu-pages/${slug}.php';`,
+				(contents) => contents.includes(`require_once __DIR__ . '/menu-pages/${slug}.php';`)
+			);
+		} catch(error) {
+			console.log(chalk.red(error));
+		}
 	})

@@ -34,7 +34,7 @@ module.exports = async (defaults) => {
 			inactive: 'no',
 		},
 		{
-			type: defaults.postTypes ? null : 'multiselect',
+			type: defaults.postTypes.length ? null : 'multiselect',
 			name: 'postTypes',
 			message: 'Post types with column:',
 			initial: defaults.postTypes ? '' : 1,

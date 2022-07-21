@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const { Command, InvalidArgumentError } = require('commander');
 const { capitalize, kebabCase, lowerCase, snakeCase, startCase } = require('lodash');
 const path = require('path');
@@ -5,6 +6,7 @@ const pluralize = require('pluralize');
 
 const prompts = require('./taxonomy.prompts');
 const scaffold = require('../utils/scaffold');
+const { searchAndReplace } = require('../utils/project-data');
 
 /**
  * Export the taxonomy scaffolding command.
@@ -89,6 +91,25 @@ module.exports = () => new Command('taxonomy')
 
 		try {
 			await scaffold(path.resolve(__dirname, './taxonomy.template.php.ejs'), `taxonomies/${slug}.php`, vars);
-			await searchAndReplace(`${plugin}.php`, '/* TAXONOMIES */', `/* TAXONOMIES */\r\nrequire_once __DIR__ . '/taxonomies/${slug}.php';`);
-		} catch (error) {}
+			await searchAndReplace(
+				`${plugin}.php`,
+				'/* TAXONOMIES */',
+				`/* TAXONOMIES */\r\nrequire_once __DIR__ . '/taxonomies/${slug}.php';`,
+				(contents) => contents.includes(`require_once __DIR__ . '/taxonomies/${slug}.php';`)
+			);
+			await searchAndReplace(
+				`${plugin}.php`,
+				'/* REGISTER TAXONOMIES */',
+				`/* REGISTER TAXONOMIES */\r\n\t${pluginMachineName}_taxonomy_${machineName}_init();`,
+				(contents) => contents.includes(`${pluginMachineName}_taxonomy_${machineName}_init();`)
+			);
+			await searchAndReplace(
+				`${plugin}.php`,
+				'/* UNREGISTER TAXONOMIES */',
+				`/* UNREGISTER TAXONOMIES */\r\n\tunregister_taxonomy( '${slug}' );`,
+				(contents) => contents.includes(`unregister_taxonomy( '${slug}' );`)
+			);
+		} catch (error) {
+			console.log(chalk.red(error));
+		}
 	})

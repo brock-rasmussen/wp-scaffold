@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const { Command } = require('commander');
 const { kebabCase, snakeCase, startCase } = require('lodash');
 const path = require('path');
@@ -47,7 +48,14 @@ module.exports = () => new Command('post-column')
 
 		try {
 			await scaffold(path.resolve(__dirname, './post-column.template.php.ejs'), `post-columns/${fileName}.php`, vars);
-			await searchAndReplace(`${plugin}.php`, '/* POST COLUMNS */', `/* POST COLUMNS */\r\n\trequire_once __DIR__ . '/post-columns/${fileName}.php';`);
-		} catch (error) {}
+			await searchAndReplace(
+				`${plugin}.php`,
+				'/* POST COLUMNS */',
+				`/* POST COLUMNS */\r\n\trequire_once __DIR__ . '/post-columns/${fileName}.php';`,
+				(contents) => contents.includes(`require_once __DIR__ . '/post-columns/${fileName}.php';`)
+			);
+		} catch (error) {
+			console.log(chalk.red(error));
+		}
 	});
 

@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const { Command } = require('commander');
 const { readFile } = require('fs/promises');
 const { kebabCase, snakeCase, startCase } = require('lodash');
@@ -50,5 +51,7 @@ module.exports = () => new Command('plugin')
 
 		try {
 			scaffold(path.resolve(__dirname, './plugin.template'), `${slug}`, vars);
-		} catch(error) {}
+		} catch(error) {
+			console.log(chalk.red(error));
+		}
 	})

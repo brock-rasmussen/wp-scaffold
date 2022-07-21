@@ -2,7 +2,7 @@
 /**
  * Add the `<%= slug %>` submenu page.
  *
- * @see https://developer.wordpress.org/reference/functions/add_menu_page/
+ * @see https://developer.wordpress.org/reference/functions/add_submenu_page/
  */
 function <%= pluginMachineName %>_submenu_page_<%= machineName %>_init() {
 	add_submenu_page(
@@ -56,7 +56,7 @@ function <%= pluginMachineName %>_submenu_page_<%= machineName %>_render() {
  * @see https://developer.wordpress.org/reference/hooks/admin_enqueue_scripts/
  */
 function <%= pluginMachineName %>_submenu_page_<%= machineName %>_enqueue( $hook_suffix ) {
-	if ( $hook_suffix === get_plugin_page_hookname( '<%= slug %>', '' ) ) {
+	if ( $hook_suffix === get_plugin_page_hookname( '<%= slug %>', '<%= parentSlug %>' ) ) {
 		// Enqueue scripts and styles for this page.
 		// wp_enqueue_script( ... );
 		// wp_enqueue_style( ... );

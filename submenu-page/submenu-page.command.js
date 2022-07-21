@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const { Command } = require('commander');
 const { kebabCase, snakeCase, startCase } = require('lodash');
 const path = require('path');
@@ -5,12 +6,13 @@ const path = require('path');
 const { resolveMenuPage } = require('../menu-page/menu-page.utils');
 const prompts = require('./submenu-page.prompts');
 const scaffold = require('../utils/scaffold');
+const { searchAndReplace } = require('../utils/project-data');
 
 /**
  * Export the submenu-page scaffolding command.
  */
 module.exports = () => new Command('submenu-page')
-	.description('generate PHP for an admin submenu page')
+	.description('FEATURE PLUGIN ONLY - generate PHP for an admin submenu page')
 	.argument('<slug>', 'the unique identifier for the menu item', (slug) => {
 		// Remove non-lowercase alphanumerics. Allow hyphens and underscores.
 		return slug.toLowerCase().replace(/[^a-z\-_\d]/g, '');
@@ -49,6 +51,13 @@ module.exports = () => new Command('submenu-page')
 
 		try {
 			await scaffold(path.resolve(__dirname, './submenu-page.template.php.ejs'), `submenu-pages/${slug}.php`, vars);
-			await searchAndReplace(`${plugin}.php`, '/* SUBMENU PAGES */', `/* SUBMENU PAGES */\r\nrequire_once __DIR__ . '/submenu-pages/${slug}.php';`);
-		} catch(error) {}
+			await searchAndReplace(
+				`${plugin}.php`,
+				'/* SUBMENU PAGES */',
+				`/* SUBMENU PAGES */\r\n\trequire_once __DIR__ . '/submenu-pages/${slug}.php';`,
+				(contents) => contents.includes(`require_once __DIR__ . '/submenu-pages/${slug}.php';`)
+			);
+		} catch(error) {
+			console.log(chalk.red(error));
+		}
 	})

@@ -29,7 +29,6 @@ define( '<%= machineName.toUpperCase() %>_VERSION', '1.0.0' );
 // Include scaffolded files.
 if ( is_admin() ) {
 	/* MENU PAGES */
-	/* METABOXES */
 	/* POST COLUMNS */
 	/* SETTINGS FIELDS */
 	/* SETTINGS SECTIONS */
@@ -83,10 +82,10 @@ function <%= machineName %>_upgrade( $upgrader, $hook_extra ) {
 	$version = get_option( '<%= machineName %>_version' );
 
 	if (
-		$options['action'] == 'update' &&
-		$options['type'] == 'plugin' &&
-		isset( $options['plugins'] ) &&
-		in_array( $basename, $options['plugins'] ) &&
+		$hook_extra['action'] == 'update' &&
+		$hook_extra['type'] == 'plugin' &&
+		isset( $hook_extra['plugins'] ) &&
+		in_array( $basename, $hook_extra['plugins'] ) &&
 		$version !== <%= machineName.toUpperCase() %>_VERSION
 	) {
 		// Write your upgrade path here.

@@ -38,10 +38,17 @@ const readdirFilenames = async (dir) => {
  * @param {string} filename 
  * @param {string,RegExp} search 
  * @param {string} replace
+ * @param {function} abort
  */
-const searchAndReplace = async (filename, search, replace) => {
+const searchAndReplace = async (filename, search, replace, abort = (contents) => false) => {
 	try {
 		let contents = await readFile(path.resolve(process.cwd(), filename), 'utf-8');
+		
+		// If the abort callback returns true, stop.
+		if (abort(contents)) {
+			return;
+		}
+
 		let newContents = contents.replaceAll(search, replace);
 		await writeFile(path.resolve(process.cwd(), filename), newContents, 'utf-8');
 	} catch(error) {}

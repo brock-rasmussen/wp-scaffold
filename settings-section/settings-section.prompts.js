@@ -1,5 +1,5 @@
 const prompts = require('prompts');
-const { getSettingsPageChoices } = require('../menu-page/menu-page.utils');
+const { getSettingsPageChoices } = require('./settings-section.utils');
 
 module.exports = async (defaults) => {
 	let settingsPageChoices = !defaults.parent ? await getSettingsPageChoices() : [];

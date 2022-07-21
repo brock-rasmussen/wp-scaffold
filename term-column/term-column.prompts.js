@@ -34,7 +34,7 @@ module.exports = async (defaults) => {
 			inactive: 'no',
 		},
 		{
-			type: defaults.taxonomies ? null : 'multiselect',
+			type: defaults.taxonomies.length ? null : 'multiselect',
 			name: 'taxonomies',
 			message: 'Taxonomies with column:',
 			initial: defaults.taxonomies ? '' : 1,

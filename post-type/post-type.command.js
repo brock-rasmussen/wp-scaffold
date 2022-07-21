@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const { Command, InvalidArgumentError } = require('commander');
 const { capitalize, kebabCase, lowerCase, snakeCase, startCase } = require('lodash');
 const path = require('path');
@@ -90,8 +91,25 @@ module.exports = () => new Command('post-type')
 
 		try {
 			await scaffold(path.resolve(__dirname, './post-type.template.php.ejs'), `post-types/${slug}.php`, vars);
-			await searchAndReplace(`${plugin}.php`, '/* POST TYPES */', `/* POST TYPES */\r\nrequire_once __DIR__ . '/post-types/${slug}.php';`);
-			await searchAndReplace(`${plugin}.php`, '/* REGISTER POST TYPES */', `/* REGISTER POST TYPES */\r\n\t${pluginMachineName}_post_type_${machineName}_init();`);
-			await searchAndReplace(`${plugin}.php`, '/* UNREGISTER POST TYPES */', `/* UNREGISTER POST TYPES */\r\n\tunregister_post_type('${slug}');`);
-		} catch(error) {}
+			await searchAndReplace(
+				`${plugin}.php`,
+				'/* POST TYPES */',
+				`/* POST TYPES */\r\nrequire_once __DIR__ . '/post-types/${slug}.php';`,
+				(contents) => contents.includes(`require_once __DIR__ . '/post-types/${slug}.php';`)
+			);
+			await searchAndReplace(
+				`${plugin}.php`,
+				'/* REGISTER POST TYPES */',
+				`/* REGISTER POST TYPES */\r\n\t${pluginMachineName}_post_type_${machineName}_init();`,
+				(contents) => contents.includes(`${pluginMachineName}_post_type_${machineName}_init();`)
+			);
+			await searchAndReplace(
+				`${plugin}.php`,
+				'/* UNREGISTER POST TYPES */',
+				`/* UNREGISTER POST TYPES */\r\n\tunregister_post_type( '${slug}' );`,
+				(contents) => contents.includes(`unregister_post_type( '${slug}' );`)
+			);
+		} catch(error) {
+			console.log(chalk.red(error));
+		}
 	})

@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const { Command, Option } = require('commander');
 const { kebabCase, snakeCase, startCase } = require('lodash');
 const path = require('path');
@@ -9,7 +10,7 @@ const scaffold = require('../utils/scaffold');
  * Export the settings-field scaffolding command.
  */
 module.exports = () => new Command('settings-field')
-	.description('generate PHP for a settings field to appear in a settings section')
+	.description('FEATURE PLUGIN ONLY - generate PHP for a settings field to appear in a settings section')
 	.argument('<slug>', 'the field identifier', (slug) => {
 		// Not required to be snake-case, but seems to be the common convention.
 		return kebabCase(slug);
@@ -115,6 +116,13 @@ module.exports = () => new Command('settings-field')
 
 		try {
 			await scaffold(path.resolve(__dirname, './settings-field.template.php.ejs'), `settings-fields/${fileName}.php`, vars);
-			await searchAndReplace(`${plugin}.php`, '/* SETTINGS FIELDS */', `/* SETTINGS FIELDS */\r\nrequire_once __DIR__ . '/settings-fields/${slug}.php';`);
-		} catch(error) {}
+			await searchAndReplace(
+				`${plugin}.php`,
+				'/* SETTINGS FIELDS */',
+				`/* SETTINGS FIELDS */\r\nrequire_once __DIR__ . '/settings-fields/${slug}.php';`,
+				(contents) => contents.includes(`require_once __DIR__ . '/settings-fields/${slug}.php';`)
+			);
+		} catch(error) {
+			console.log(chalk.red(error));
+		}
 	})
