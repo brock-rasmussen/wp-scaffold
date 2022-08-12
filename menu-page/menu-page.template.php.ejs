@@ -5,29 +5,29 @@
  * @see https://developer.wordpress.org/reference/functions/add_menu_page/
  */
 function <%= pluginMachineName %>_menu_page_<%= machineName %>_init() {
-	add_menu_page(
-		__( '<%= pageTitle %>', '<%= textdomain %>' ),
-		__( '<%= menuTitle %>', '<%= textdomain %>' ),
-		// @see https://wordpress.org/support/article/roles-and-capabilities/
-		'manage_options',
-		'<%= slug %>',
-		'<%= pluginMachineName %>_menu_page_<%= machineName %>_render',
-		'dashicons-<%= menuIcon %>',
-		null,
-	);
-
-	// TODO: Uncomment this code to customize the submenu menu title, if applicable. Remove this code otherwise.
-	/* add_submenu_page(
-		'<%= slug %>',
-		__( '<%= pageTitle %>', '<%= textdomain %>' ),
-		// Customize the submenu link.
-		__( '<%= menuTitle %>', '<%= textdomain %>' ),
-		// @see https://wordpress.org/support/article/roles-and-capabilities/
-		'manage_options',
-		'<%= slug %>',
-		'<%= pluginMachineName %>_menu_page_<%= machineName %>_render',
-		null,
-	); */
+  <%_ if (parent) { _%>
+  add_submenu_page(
+    '<%= parent %>',
+    __( '<%= pageTitle %>', '<%= textdomain %>' ),
+    __( '<%= menuTitle %>', '<%= textdomain %>' ),
+    // @see https://wordpress.org/support/article/roles-and-capabilities/
+    'manage_options',
+    '<%= slug %>',
+    '<%= pluginMachineName %>_menu_page_<%= machineName %>_render',
+    null,
+  );
+  <%_ } else { _%>
+  add_menu_page(
+    __( '<%= pageTitle %>', '<%= textdomain %>' ),
+    __( '<%= menuTitle %>', '<%= textdomain %>' ),
+    // @see https://wordpress.org/support/article/roles-and-capabilities/
+    'manage_options',
+    '<%= slug %>',
+    '<%= pluginMachineName %>_menu_page_<%= machineName %>_render',
+    '<%= icon %>',
+    null,
+  );
+  <%_ } _%>
 }
 add_action( 'admin_menu', '<%= pluginMachineName %>_menu_page_<%= machineName %>_init' );
 
@@ -38,26 +38,28 @@ add_action( 'admin_menu', '<%= pluginMachineName %>_menu_page_<%= machineName %>
 function <%= pluginMachineName %>_menu_page_<%= machineName %>_render() {
 	global $plugin_page; // '<%= slug %>'
 	?>
-	<div class="wrap">
-		<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-		<form method="post" action="/wp-admin/options.php">
-			<?php
-			settings_fields( $plugin_page );
-			do_settings_sections( $plugin_page );
+  <div class="wrap">
+    <h1>
+      <?php echo esc_html( get_admin_page_title() ); ?>
+    </h1>
+    <form method="post" action="/wp-admin/options.php">
+      <?php
+      settings_fields( $plugin_page );
+      do_settings_sections( $plugin_page );
 
-			ob_start();
-			do_settings_fields( $plugin_page, 'default' );
-			$default_fields = ob_get_clean();
-			?>
-			<?php if ( ! empty( $default_fields ) ) : ?>
-				<table class="form-table">
-					<?php echo $default_fields; ?>
-				</table>
-			<?php endif; ?>
-			<?php submit_button(); ?>
-		</form>
-	</div>
-	<?php
+      ob_start();
+      do_settings_fields( $plugin_page, 'default' );
+      $default_fields = ob_get_clean();
+      ?>
+      <?php if ( ! empty( $default_fields ) ) : ?>
+        <table class="form-table">
+          <?php echo $default_fields; ?>
+        </table>
+      <?php endif; ?>
+      <?php submit_button(); ?>
+    </form>
+  </div>
+  <?php
 }
 
 
@@ -70,9 +72,7 @@ function <%= pluginMachineName %>_menu_page_<%= machineName %>_render() {
  */
 function <%= pluginMachineName %>_menu_page_<%= machineName %>_enqueue( $hook_suffix ) {
 	if ( $hook_suffix === get_plugin_page_hookname( '<%= slug %>', '' ) ) {
-		// Enqueue scripts and styles for this page.
-		// wp_enqueue_script( ... );
-		// wp_enqueue_style( ... );
+    /* ENQUEUE SCRIPTS */
 	}
 }
 add_action( 'admin_enqueue_scripts', '<%= pluginMachineName %>_menu_page_<%= machineName %>_enqueue' );

@@ -1,57 +1,160 @@
-const chalk = require('chalk');
-const { Command } = require('commander');
-const { readFile } = require('fs/promises');
-const { kebabCase, snakeCase, startCase } = require('lodash');
-const path = require('path');
+const { CliUx } = require('@oclif/core')
+const chalk = require('chalk')
+const { Command } = require('commander')
+const { prompt } = require('inquirer')
+const { kebabCase, snakeCase, startCase } = require('lodash')
+const path = require('path')
 
-const prompts = require('./plugin.prompts');
-const scaffold = require('../utils/scaffold');
+const scaffold = require('../utils/scaffold')
+const isValidURL = require('../utils/validation/isValidURL')
 
-/**
- * Export the plugin scaffolding command.
- */
-module.exports = () => new Command('plugin')
-	.description('generate a folder and files for a basic plugin')
-	.argument('<slug>', 'the (unique) plugin folder and textdomain', (slug) => {
-		return kebabCase(slug);
-	})
-	.option('-y, --yes', 'automatically answer "yes" to any prompts', false)
-	.action(async (slug, options) => {
-		// Get package.json from working directory.
-		let package = '{}'
-		
-		try {
-			package = await readFile(path.resolve(process.cwd(), 'package.json'), 'utf-8');
-			return contents;
-		} catch(error) {}
-		
-		packageJson = JSON.parse(package);
+module.exports = () =>
+  new Command('plugin')
+    .description('scaffold a plugin')
+    .argument('[slug]', 'plugin folder name and text domain', (slug) =>
+      kebabCase(slug)
+    )
+    .option('-y, --yes', 'automatically answer "yes" to any prompts', false)
+    .action(async (slug, options) => {
+      // Prompt for a slug if it wasn't provided.
+      if (!slug) {
+        const responses = await prompt([
+          {
+            type: 'input',
+            name: 'slug',
+            message: 'slug',
+            filter(input) {
+              return kebabCase(input)
+            },
+            validate(input) {
+              if (!input) {
+                return 'SLUG is required'
+              }
+              return true
+            },
+          },
+        ])
 
-		// Default values.
-		let defaults = {
-			name: startCase(slug),
-			description: '',
-			author: '',
-			authorURI: packageJson?.homepage ?? '',
-			pluginURI: packageJson?.repository?.url ?? packageJson?.homepage ?? '',
-		};
+        slug = responses.slug
+      }
 
-		// If `--yes` option was passed, skip the wizard.
-		let responses = options.yes ? {} : await prompts(defaults);
+      // Default values.
+      const defaults = {
+        name: startCase(slug),
+        description: '',
+        author: '',
+        authorURI: '',
+        pluginURI: '',
+      }
 
-		// Create a PHP-valid string for use in PHP function names.
-		let machineName = snakeCase(slug);
+      // If `--yes` option was passed, skip the wizard.
+      const responses = options.yes
+        ? {}
+        : await prompt([
+            {
+              type: 'text',
+              name: 'name',
+              message: 'plugin name',
+              default: startCase(slug),
+              validate(name) {
+                return !!name || 'plugin name is required'
+              },
+            },
+            {
+              type: 'text',
+              name: 'description',
+              message: 'description',
+              default: defaults.description,
+            },
+            {
+              type: 'text',
+              name: 'author',
+              message: 'author',
+              default: defaults.author,
+            },
+            {
+              type: 'text',
+              name: 'authorURI',
+              message: 'author URI (e.g. website, github profile, etc.)',
+              default: defaults.authorURI,
+              validate(authorURI) {
+                if (!authorURI) {
+                  return true
+                }
+                return isValidURL(authorURI) || 'invalid URI'
+              },
+            },
+            {
+              type: 'text',
+              name: 'pluginURI',
+              message:
+                'plugin URI (e.g. documentation site, github repository, etc.)',
+              default: defaults.pluginURI,
+              validate(pluginURI) {
+                if (!pluginURI) {
+                  return true
+                }
+                return isValidURL(pluginURI) || 'invalid URI'
+              },
+            },
+          ])
 
-		// Data variables to be passed to the template.
-		let vars = Object.assign({
-			slug,
-			machineName,
-			textdomain: slug,
-		}, defaults, responses);
+      // Add newline in command line.
+      console.log('')
+      // Display loader.
+      CliUx.ux.action.start(chalk.bold('creating files'))
 
-		try {
-			scaffold(path.resolve(__dirname, './plugin.template'), `${slug}`, vars);
-		} catch(error) {
-			console.log(chalk.red(error));
-		}
-	})
+      // PHP-valid string for use in function names.
+      const machineName = snakeCase(slug)
+
+      // Data variables to be passed to the template.
+      const vars = Object.assign(
+        {
+          slug,
+          machineName,
+          textdomain: slug,
+        },
+        defaults,
+        responses
+      )
+
+      try {
+        await scaffold(
+          path.resolve(__dirname, './plugin.template'),
+          `${slug}`,
+          vars
+        )
+
+        CliUx.ux.action.stop(chalk.green('done'))
+
+        const tree = CliUx.ux.tree()
+        tree.insert(slug)
+
+        const files = [
+          '.editorconfig',
+          `${slug}.php`,
+          'index.php',
+          'LICENSE.txt',
+          'README.md',
+          'README.txt',
+          'uninstall.php',
+        ].sort((a, b) => {
+          const lowerA = a.toLowerCase
+          const lowerB = b.toLowerCase
+
+          return lowerA < lowerB
+        })
+
+        files.forEach((file) => {
+          tree.nodes[slug].insert(file)
+        })
+
+        // Add newline in command line.
+        console.log('')
+        // Display file tree
+        tree.display()
+      } catch (error) {
+        CliUx.ux.action.stop(chalk.red('error'))
+        console.log(error)
+      }
+    })

@@ -1,0 +1,14 @@
+<label for="<%= plugin %>-<%= slug %>">
+  <input
+    id="<%= plugin %>-<%= slug %>"
+    type="checkbox"
+    value="1"
+    name="<%= optionName %>"
+    <?php if ( $args['description']) : ?>aria-describedby="<%= plugin %>-<%= slug %>-description"<?php endif; ?>
+    <?php checked( $value ) ?>
+  />
+  <%= title %>
+</label>
+<?php if ( $args['description'] ) : ?>
+  <p id="<%= plugin %>-<%= slug %>-description" class="description"><?php echo $args['description']; ?></p>
+<?php endif; ?>

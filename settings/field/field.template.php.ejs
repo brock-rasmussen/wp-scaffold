@@ -1,0 +1,50 @@
+<?php
+/**
+ * Add the `<%= slug %>` settings field and register the `<%= slug %>` setting.
+ *
+ * @see https://developer.wordpress.org/reference/functions/add_settings_field/
+ * @see https://developer.wordpress.org/reference/functions/register_setting/
+ */
+function <%= pluginMachineName %>_settings_field_<%= machineName %>_init() {
+  // TODO: Update default value.
+  $default = '';
+
+  add_settings_field(
+    '<%= slug %>',
+    __( '<%= title %>', '<%= textdomain %>' ),
+    '<%= pluginMachineName %>_settings_field_<%= machineName %>_render',
+    '<%= page %>',
+    '<%= section %>',
+    [
+      'label_for'   => '<%= labelFor %>',
+      'description' => '<%= description %>',
+      'default'     => $default,
+    ]
+  );
+
+  register_setting(
+    '<%= page %>',
+    '<%= optionName %>',
+    [
+      <% if (sanitizeCallback) { %>// <% } %>'sanitize_callback' => '<%= sanitizeCallback ? sanitizeCallback : '' %>',
+      'default'           => $default,
+    ]
+  );
+}
+add_action( 'admin_init', '<%= pluginMachineName %>_settings_field_<%= machineName %>_init' );
+
+
+/**
+ * Render the field.
+ *
+ * @param array $args The $args array passed in `add_settings_field`.
+ */
+function <%= pluginMachineName %>_settings_field_<%= machineName %>_render( $args ) {
+  $value = get_option( '<%= optionName %>', $args['default'] );
+  <%_ if (['checkboxes', 'radio', 'select'].includes(type)) { -%>
+  $options = [ <%- options.map(option=> `'${option}'`).join(', ') %> ];
+  <%_ } -%>
+  ?>
+<%- include(`types/${fieldTemplate}`, { optionName, plugin, slug, title }); _%>
+  <?php
+}

@@ -1,0 +1,12 @@
+<select
+  id="<%= plugin %>-<%= slug %>"
+  name="<%= optionName %>"
+  <?php if ( $args['description'] ) : ?>aria-describedby="<%= plugin %>-<%= slug %>-description"<?php endif; ?>
+>
+  <?php foreach ( $options as $option ) : ?>
+    <option value="<?php echo $option; ?>"<?php selected( $value, $option ); ?>><?php echo $option; ?></option>
+  <?php endforeach; ?>
+</select>
+<?php if ( $args['description'] ) : ?>
+  <p id="<%= plugin %>-<%= slug %>-description" class="description"><php echo $args['description']; ?></p>
+<?php endif; ?>

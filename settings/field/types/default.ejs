@@ -1,0 +1,11 @@
+<input
+  id="<%= plugin %>-<%= slug %>"
+  type="<%= type === 'color' ? 'text' : type %>"
+  value="<?php echo esc_attr( $value ); ?>"
+  name="<%= optionName %>"
+  <% if (['email', 'text', 'url'].includes(type)) { %>class="regular-text"<% } %>
+  <% if (type === 'color') { %>class="settings-field__control--color"<% } %>
+/>
+<?php if ( $args['description'] ) : ?>
+<p id="<%= plugin %>-<%= slug %>-description"><php echo $args['description']; ?></p>
+<?php endif; ?>

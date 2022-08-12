@@ -1,0 +1,12 @@
+<fieldset>
+  <legend class="screen-reader-text"><%= title %></legend>
+  <?php if ( $args['description'] ) : ?>
+  <p class="description"><?php echo $args['description']; ?></p>
+  <?php endif; ?>
+  <?php
+  wp_editor( $value, '<%= plugin %>-<%= slug %>', [
+    'textarea_name' => '<%= optionName %>',
+    'textarea_rows' => 10,
+  ] );
+  ?>
+</fieldset>

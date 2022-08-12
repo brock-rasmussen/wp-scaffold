@@ -1,0 +1,22 @@
+<fieldset>
+  <legend class="screen-reader-text"><%= title %></legend>
+  <p>
+    <?php for ( $i = 0; $i < count( $options ); $i++ ) : ?>
+      <label>
+        <input
+          type="checkbox"
+          value="<?php echo esc_attr( current( $options ) ); ?>"
+          name="<%= optionName %>[]"
+          <?php if ( in_array( current( $options ), $value ) ) : ?>checked="checked"<?php endif; ?>
+        />
+        <?php echo current( $options ); ?>
+      </label>
+      <?php if ( next( $options ) ) : ?>
+        <br />
+      <?php endif; ?>
+    <?php endfor; ?>
+  </p>
+  <?php if ( $args['description'] ) : ?>
+    <p id="<%= plugin %>-<%= slug %>-description" class="description"><%= description %></p>
+  <?php endif; ?>
+</fieldset>

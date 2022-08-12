@@ -14,12 +14,14 @@
     "url": "https://github.com/badger91/wp-scaffold"
   },
   "bin": {
-    "brwp": "./index.js"
+    "bwp": "./index.js"
   },
   "dependencies": {
+    "@oclif/core": "1.13.0",
     "chalk": "4.1.2",
     "commander": "9.3.0",
     "ejs": "3.1.8",
+    "inquirer": "^8.2.4",
     "lodash": "^4.17.21",
     "pluralize": "^8.0.0",
     "prompts": "^2.4.2"

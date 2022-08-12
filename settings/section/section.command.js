@@ -2,23 +2,25 @@ const { CliUx } = require('@oclif/core')
 const chalk = require('chalk')
 const { Command } = require('commander')
 const { prompt } = require('inquirer')
-const { snakeCase, kebabCase, startCase } = require('lodash')
+const { kebabCase, snakeCase, startCase } = require('lodash')
 const path = require('path')
 
-const dashicons = require('../utils/dashicons')
-const getMenuPages = require('../utils/getMenuPages')
-const insert = require('../utils/insert')
-const scaffold = require('../utils/scaffold')
+const getSettingsPages = require('../../utils/getSettingsPages')
+const insert = require('../../utils/insert')
+const scaffold = require('../../utils/scaffold')
 
 module.exports = () =>
-  new Command('menu-page')
-    .description('scaffold a menu page')
-    .argument('[slug]', 'unique identifier for the menu item', (slug) => {
-      // Remove non-lowercase alphanumerics. Allow hyphens and underscores.
-      return slug.toLowerCase().replace(/[^a-z\-_\d]/g, '')
-    })
-    .option('-p, --parent [parent]', 'parent page')
-    .option('-y, --yes', 'automatically answer "yes" to any prompts', false)
+  new Command('section')
+    .description('scaffold a settings section')
+    .argument(
+      '[slug]',
+      'unique identifier for the settings section',
+      (slug) => {
+        return kebabCase(slug)
+      }
+    )
+    .option('-p, --page', 'the menu page slug')
+    .option('y, --yes', 'automatically answer "yes" to any prompts', false)
     .action(async (slug, options) => {
       // Prompt for a slug if it wasn't provided.
       if (!slug) {
@@ -28,7 +30,7 @@ module.exports = () =>
             name: 'slug',
             message: 'slug',
             filter(input) {
-              return input.toLowerCase().replace(/[^a-z\-_\d]/g, '')
+              return kebabCase(input)
             },
             validate(input) {
               if (!input) {
@@ -42,30 +44,22 @@ module.exports = () =>
         slug = responses.slug
       }
 
-      // Current folder name.
+      // Current plugin folder name.
       const plugin = path.basename(process.cwd())
 
       // Default values.
       const defaults = {
         textdomain: kebabCase(plugin),
-        parent: options.parent,
 
         /**
-         * Shared by menu page and submenu page
-         * @see https://developer.wordpress.org/reference/functions/add_menu_page/
-         * @see https://developer.wordpress.org/reference/functions/add_submenu_page/
+         * @see https://developer.wordpress.org/reference/functions/add_settings_section/
          */
-        pageTitle: startCase(slug),
-        menuTitle: startCase(slug),
-
-        // Menu page specific.
-        icon: '',
-
-        // Submenu page specific.
-        parent: '',
+        title: startCase(slug),
+        description: '',
+        page: options.page,
       }
 
-      const menuPages = await getMenuPages()
+      const settingsPages = await getSettingsPages()
 
       // If `--yes` option was passed, skip the wizard.
       const responses = options.yes
@@ -74,34 +68,23 @@ module.exports = () =>
             [
               {
                 type: 'list',
-                name: 'parent',
-                message: 'parent',
-                default: defaults.parent,
-                choices: menuPages,
+                name: 'page',
+                message: 'page',
+                default: defaults.page,
+                choices: settingsPages,
                 loop: false,
               },
               {
                 type: 'input',
-                name: 'menuTitle',
-                message: 'menu title',
-                default: defaults.menuTitle,
+                name: 'title',
+                message: 'title',
+                default: defaults.title,
               },
               {
                 type: 'input',
-                name: 'pageTitle',
-                message: 'page title',
-                default: defaults.pageTitle,
-              },
-              {
-                type: 'list',
-                name: 'icon',
-                message: 'icon',
-                defaults: defaults.icon,
-                choices: dashicons,
-                loop: false,
-                when(responses) {
-                  return !responses.parent
-                },
+                name: 'description',
+                message: 'description',
+                default: defaults.description,
               },
             ],
             options
@@ -129,14 +112,14 @@ module.exports = () =>
 
       try {
         await scaffold(
-          path.resolve(__dirname, './menu-page.template.php.ejs'),
-          `menu-pages/${slug}.php`,
+          path.resolve(__dirname, './section.template.php.ejs'),
+          `settings-sections/${slug}.php`,
           vars
         )
-        const insert1 = await insert(
+        let insert1 = await insert(
           `${plugin}.php`,
-          `/* ${vars.parent ? 'SUBMENU' : 'MENU'} PAGES */`,
-          `\trequire_once __DIR__ . '/menu-pages/${slug}.php';`
+          '/* SETTINGS SECTIONS */',
+          `\trequire_once __DIR__ . '/settings-sections/${slug}.php';`
         )
 
         CliUx.ux.action.stop(chalk.green('done'))
@@ -150,8 +133,8 @@ module.exports = () =>
           )
         }
 
-        tree.nodes[plugin].insert('menu-pages')
-        tree.nodes[plugin].nodes['menu-pages'].insert(`${slug}.php`)
+        tree.nodes[plugin].insert('settings-sections')
+        tree.nodes[plugin].nodes['settings-sections'].insert(`${slug}.php`)
 
         // Add newline in command line.
         console.log('')

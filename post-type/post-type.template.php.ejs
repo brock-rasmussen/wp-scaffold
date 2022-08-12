@@ -6,43 +6,43 @@
  */
 function <%= pluginMachineName %>_post_type_<%= machineName %>_init() {
 	register_post_type( '<%= slug %>', [
-		'labels'				=> [
-			'name'					=> __( '<%= itemsTitleCase %>', '<%= textdomain %>' ),
-			'singular_name'			=> __( '<%= itemTitleCase %>', '<%= textdomain %>' ),
-			'all_items'				=> __( 'All <%= itemsTitleCase %>', '<%= textdomain %>' ),
-			'archives'				=> __( '<%= itemTitleCase %> Archives', '<%= textdomain %>' ),
-			'attributes'			=> __( '<%= itemTitleCase %> Attributes', '<%= textdomain %>' ),
-			'insert_into_item'		=> __( 'Insert into <%= item %>', '<%= textdomain %>' ),
-			'uploaded_to_this_item'	=> __( 'Uploaded to this <%= item %>', '<%= textdomain %>' ),
-			'featured_image'		=> _x( 'Featured Image', '<%= slug %>', '<%= textdomain %>' ),
-			'use_featured_image'	=> _x( 'Use as featured image', '<%= slug %>', '<%= textdomain %>' ),
-			'filter_items_list'		=> __( 'Filter <%= items %> list', '<%= textdomain %>' ),
-			'items_list_navigation'	=> __( '<%= itemsUpperFirst %> list navigation', '<%= textdomain %>' ),
-			'items_list'			=> __( '<%= itemsUpperFirst %> list', '<%= textdomain %>' ),
-			'new_item'				=> __( 'New <%= itemTitleCase %>', '<%= textdomain %>' ),
-			'add_new'				=> __( 'Add New', '<%= textdomain %>' ),
-			'add_new_item'			=> __( 'Add New <%= itemTitleCase %>', '<%= textdomain %>' ),
-			'edit_item'				=> __( 'Edit <%= itemTitleCase %>', '<%= textdomain %>' ),
-			'view_item'				=> __( 'View <%= itemTitleCase %>', '<%= textdomain %>' ),
-			'search_items'			=> __( 'Search <%= itemsTitleCase %>', '<%= textdomain %>' ),
-			'not_found'				=> __( 'No <%= items %> found', '<%= textdomain %>' ),
-			'not_found_in_trash'	=> __( 'No <%= items %> found in trash', '<%= textdomain %>' ),
-			'parent_item_colon'		=> __( 'Parent <%= itemTitleCase %>', '<%= textdomain %>' ),
-			'menu_name'				=> __( '<%= itemTitleCase %>', '<%= textdomain %>' ),
+		'labels'              => [
+			'name'                  => __( '<%= itemsTitleCase %>', '<%= textdomain %>' ),
+			'singular_name'         => __( '<%= itemTitleCase %>', '<%= textdomain %>' ),
+			'all_items'             => __( 'All <%= itemsTitleCase %>', '<%= textdomain %>' ),
+			'archives'              => __( '<%= itemTitleCase %> Archives', '<%= textdomain %>' ),
+			'attributes'            => __( '<%= itemTitleCase %> Attributes', '<%= textdomain %>' ),
+			'insert_into_item'      => __( 'Insert into <%= item %>', '<%= textdomain %>' ),
+			'uploaded_to_this_item' => __( 'Uploaded to this <%= item %>', '<%= textdomain %>' ),
+			'featured_image'        => _x( 'Featured Image', '<%= slug %>', '<%= textdomain %>' ),
+			'use_featured_image'    => _x( 'Use as featured image', '<%= slug %>', '<%= textdomain %>' ),
+			'filter_items_list'     => __( 'Filter <%= items %> list', '<%= textdomain %>' ),
+			'items_list_navigation' => __( '<%= itemsUpperFirst %> list navigation', '<%= textdomain %>' ),
+			'items_list'            => __( '<%= itemsUpperFirst %> list', '<%= textdomain %>' ),
+			'new_item'              => __( 'New <%= itemTitleCase %>', '<%= textdomain %>' ),
+			'add_new'               => __( 'Add New', '<%= textdomain %>' ),
+			'add_new_item'          => __( 'Add New <%= itemTitleCase %>', '<%= textdomain %>' ),
+			'edit_item'             => __( 'Edit <%= itemTitleCase %>', '<%= textdomain %>' ),
+			'view_item'             => __( 'View <%= itemTitleCase %>', '<%= textdomain %>' ),
+			'search_items'          => __( 'Search <%= itemsTitleCase %>', '<%= textdomain %>' ),
+			'not_found'             => __( 'No <%= items %> found', '<%= textdomain %>' ),
+			'not_found_in_trash'    => __( 'No <%= items %> found in trash', '<%= textdomain %>' ),
+			'parent_item_colon'     => __( 'Parent <%= itemTitleCase %>', '<%= textdomain %>' ),
+			'menu_name'             => __( '<%= itemTitleCase %>', '<%= textdomain %>' ),
 		],
-		'description'			=> '',
-		'hierarchical'			=> <%= hierarchical %>,
-		'public'				=> <%= public %>,
-		// 'exclude_from_search'	=> <%= !public %>,
-		<% if (showUi === public) { _%>// <% } %>'show_ui'				=> <%= showUi %>,
-		'supports'				=> [ <%- supports.map(support => `'${support}'`).join(', ') %> ],
-		'has_archive'			=> '<%= resourceSlug %>',
-		'rewrite'				=> [
-			'slug'			=> '<%= resourceSlug %>',
-			'with_front'	=> false,
+		'description'         => '',
+		'hierarchical'        => <%= hierarchical %>,
+		'public'              => <%= public %>,
+		// 'exclude_from_search' => <%= !public %>,
+    <% if (showUi===public) { _%>// <% } %>'show_ui'             => <%= showUi %>,
+		'supports'            => [ <%- supports.map(support => `'${support}'`).join(', ') %> ],
+		'has_archive'         => '<%= resourceSlug %>',
+		'rewrite'             => [
+			'slug'       => '<%= resourceSlug %>',
+			'with_front' => false,
 		],
-		'menu_icon'				=> 'dashicons-<%= menuIcon %>',
-		'show_in_rest'			=> <%= showInRest %>,
+		'menu_icon'           => '<%= icon %>',
+		'show_in_rest'        => <%= showInRest %>,
 	] );
 }
 add_action( 'init', '<%= pluginMachineName %>_post_type_<%= machineName %>_init' );
@@ -63,23 +63,23 @@ function <%= pluginMachineName %>_post_type_<%= machineName %>_updated_messages(
 	$permalink = get_permalink( $post );
 
 	$messages['<%= slug %>'] = [
-		0	=> '', // Unused. Messages start at index 1.
+		0  => '', // Unused. Messages start at index 1.
 		/* translators: %s: post permalink */
-		1	=> sprintf( __( '<%= itemUpperFirst %> updated. <a target="_blank" href="%s">View {{ item }}</a>', '<%= textdomain %>' ), esc_url( $permalink ) ),
-		2	=> __( 'Custom field updated.', '<%= textdomain %>' ),
-		3	=> __( 'Custom field deleted.', '<%= textdomain %>' ),
-		4	=> __( '<%= itemUpperFirst %> updated.', '<%= textdomain %>' ),
+		1  => sprintf( __( '<%= itemUpperFirst %> updated. <a target="_blank" href="%s">View {{ item }}</a>', '<%= textdomain %>' ), esc_url( $permalink ) ),
+		2  => __( 'Custom field updated.', '<%= textdomain %>' ),
+		3  => __( 'Custom field deleted.', '<%= textdomain %>' ),
+		4  => __( '<%= itemUpperFirst %> updated.', '<%= textdomain %>' ),
 		/* translators: %s: date and time of the revision */
-		5	=> isset( $_GET['revision'] ) ? sprintf( __( '<%= itemUpperFirst %> restored to revision from %s', '<%= textdomain %>' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		5  => isset( $_GET['revision'] ) ? sprintf( __( '<%= itemUpperFirst %> restored to revision from %s', '<%= textdomain %>' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		/* translators: %s: post permalink */
-		6	=> sprintf( __( '<%= itemUpperFirst %> published. <a href="%s">View <%= item %></a>', '<%= textdomain %>' ), esc_url( $permalink ) ),
-		7	=> __( '<%= itemUpperFirst %> saved.', '<%= textdomain %>' ),
+		6  => sprintf( __( '<%= itemUpperFirst %> published. <a href="%s">View <%= item %></a>', '<%= textdomain %>' ), esc_url( $permalink ) ),
+		7  => __( '<%= itemUpperFirst %> saved.', '<%= textdomain %>' ),
 		/* translators: %s: post permalink */
-		8	=> sprintf( __( '<%= itemUpperFirst %> submitted. <a target="_blank" href="%s">Preview <%= item %></a>', '<%= textdomain %>' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+		8  => sprintf( __( '<%= itemUpperFirst %> submitted. <a target="_blank" href="%s">Preview <%= item %></a>', '<%= textdomain %>' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
 		/* translators: 1: Publish box date format, see https://secure.php.net/date 2: Post permalink */
-		9	=> __sprintf( __( '<%= itemUpperFirst %> scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview <%= item %></a>', '<%= textdomain %>' ), date_i18n( __( 'M j, Y @ G:i', '<%= textdomain %>' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
+		9  => sprintf( __( '<%= itemUpperFirst %> scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview <%= item %></a>', '<%= textdomain %>' ), date_i18n( __( 'M j, Y @ G:i', '<%= textdomain %>' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
 		/* translators: %s: post permalink */
-		10	=> __sprintf( __( '<%= itemUpperFirst %> draft updated. <a target="_blank" href="%s">Preview <%= item %></a>', '<%= textdomain %>' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+		10 => sprintf( __( '<%= itemUpperFirst %> draft updated. <a target="_blank" href="%s">Preview <%= item %></a>', '<%= textdomain %>' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
 	];
 
 	return $messages;
@@ -102,15 +102,15 @@ function <%= pluginMachineName %>_post_type_<%= machineName %>_bulk_updated_mess
 
 	$bulk_messages['<%= slug %>'] = [
 		/* translators: %s: Number of <%= items %>. */
-		'updated'	=> _n( '%s <%= item %> updated.', '%s <%= items %> updated.', $bulk_counts['updated'], '<%= textdomain %>' ),
+		'updated'   => _n( '%s <%= item %> updated.', '%s <%= items %> updated.', $bulk_counts['updated'], '<%= textdomain %>' ),
 		/* translators: %s: Number of <%= items %>. */
-		'locked'	=> _n( '%s <%= item %> not updated, somebody is editing it.', '%s <%= items %> not updated, somebody is editing them.', $bulk_counts['locked'], '<%= textdomain %>' ),
+		'locked'    => _n( '%s <%= item %> not updated, somebody is editing it.', '%s <%= items %> not updated, somebody is editing them.', $bulk_counts['locked'], '<%= textdomain %>' ),
 		/* translators: %s: Number of <%= items %>. */
-		'deleted'	=> _n( '%s <%= item %> permanently deleted.', '%s <%= items %> permanently deleted.', $bulk_counts['deleted'], '<%= textdomain %>' ),
+		'deleted'   => _n( '%s <%= item %> permanently deleted.', '%s <%= items %> permanently deleted.', $bulk_counts['deleted'], '<%= textdomain %>' ),
 		/* translators: %s: Number of <%= items %>. */
-		'trashed'	=> _n( '%s <%= item %> moved to the Trash.', '%s <%= items %> moved to the Trash.', $bulk_counts['trashed'], '<%= textdomain %>' ),
+		'trashed'   => _n( '%s <%= item %> moved to the Trash.', '%s <%= items %> moved to the Trash.', $bulk_counts['trashed'], '<%= textdomain %>' ),
 		/* translators: %s: Number of <%= items %>. */
-		'untrashed'	=> _n( '%s <%= item %> restored from the Trash.', '%s <%= items %> restored from the Trash.', $bulk_counts['untrashed'], '<%= textdomain %>' ),
+		'untrashed' => _n( '%s <%= item %> restored from the Trash.', '%s <%= items %> restored from the Trash.', $bulk_counts['untrashed'], '<%= textdomain %>' ),
 	];
 
 	return $bulk_messages;

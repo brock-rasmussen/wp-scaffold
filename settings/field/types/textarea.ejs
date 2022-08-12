@@ -1,0 +1,10 @@
+<?php if ( $args['description'] ) : ?>
+<p><label for="<%= plugin %>-<%= slug %>"><php echo $args['description']; ?></label></p>
+<?php endif; ?>
+<textarea
+  id="<%= plugin %>-<%= slug %>"
+  name="<%= slug %>"
+  class="large-text"
+  rows="10"
+  cols="50"
+><?php echo $value; ?></textarea>
